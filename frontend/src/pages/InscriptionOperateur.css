@@ -1,0 +1,582 @@
+/* Container & fond */
+.registration-container {
+    position: relative;
+    width: 100vw;
+    min-height: 100vh;
+    /* uniquement l'image en fond, sans dégradé */
+    background: url('../../public/image1.jpg') center center / cover no-repeat fixed;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+.registration-nav {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    background: transparent !important;      /* fond transparent */
+    border: none !important;                 /* supprime bordures */
+    box-shadow: none !important;             /* supprime ombre */
+    padding: 1rem 0;                         /* un peu d’espace en haut/bas */
+}
+.nav-content {
+    max-width: 800px;                        /* largeur max de la nav */
+    margin: 0 auto;                          /* centrage horizontal */
+    display: flex;
+    align-items: center;                     /* alignement vertical */
+    justify-content: center;                 /* centrage du contenu */
+    gap: 1.5rem;                             /* espace entre logo et texte */
+}
+.nav-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+/* Ajustement de l’image du logo */
+.nav-logo-image {
+    width: 100px;                            /* réduit la taille si besoin */
+    height: auto;
+    object-fit: contain;
+}
+/* Texte sous‑logo centré */
+.nav-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e3a8a;
+    margin: 0 0 5px 0;
+    letter-spacing: 0.5px;
+}
+.page-header {
+    text-align: center;
+    margin-bottom: 25px;
+    color: white;
+}
+
+.page-header h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: white;
+    margin: 0 0 8px 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+.page-header p {
+    font-size: 16px;
+    color: #cbd5e1;
+    margin: 0;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.4;
+}
+
+
+.registration-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    max-width: 800px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.registration-form {
+    padding: 30px;
+}
+
+
+.form-section {
+    margin-bottom: 25px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.section-icon {
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(30, 58, 138, 0.3);
+}
+
+
+.mega-form-grid {
+    display: grid;
+    /* 4 colonnes égales */
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.compact-section {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 5px;
+}
+
+.required {
+    color: #ef4444;
+    margin-left: 3px;
+}
+
+.form-input {
+    padding: 10px 12px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: #fafafa;
+    height: 40px;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background: white;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.form-input::placeholder {
+    color: #9ca3af;
+    font-size: 13px;
+}
+
+
+.checkbox-group {
+    margin-top: 10px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 16px;
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.checkbox-label:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+.checkbox-input {
+    display: none;
+}
+
+.checkbox-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d1d5db;
+    border-radius: 6px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.checkbox-input:checked + .checkbox-custom {
+    background: #10b981;
+    border-color: #10b981;
+}
+
+.checkbox-input:checked + .checkbox-custom::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.checkbox-text {
+    font-size: 15px;
+    color: #374151;
+    font-weight: 500;
+}
+
+
+.form-actions {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.submit-button {
+    background: linear-gradient(135deg, #00509d, #00296b);
+    color: white;
+    border: none;
+    padding: 16px 40px;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgb(30, 150, 252);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 auto;
+    min-width: 280px;
+}
+
+.submit-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgb(97, 171, 232);
+}
+
+.submit-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.submit-button.loading {
+    pointer-events: none;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+.message {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.message.success {
+    background: rgb(0, 50, 94);
+    color: #1e96fc;
+    border: 2px solid rgb(97, 171, 232);
+}
+
+.message.error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+    border: 2px solid rgba(239, 68, 68, 0.2);
+}
+
+.registration-footer {
+    /* réduit l’espace en haut */
+    margin-top: 5px;      /* avant : 0px ou plus, maintenant quasiment collé */
+
+    /* augmente l’espace en dessous */
+    margin-bottom: 20px;  /* règle la distance par rapport au bas de la carte */
+
+    text-align: center;
+    color: #000000;
+    font-size: 13px;
+}
+
+.registration-footer {
+    text-align: center;
+    color: #000000;
+    font-size: 13px;
+}
+
+.registration-footer p {
+    margin: 3px 0;
+}
+
+.registration-footer a {
+    color: #60a5fa;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.registration-footer a:hover {
+    color: #93c5fd;
+    text-decoration: underline;
+}
+
+
+@media (max-width: 1200px) {
+    .mega-form-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+@media (max-width: 900px) {
+    .mega-form-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 600px) {
+    .mega-form-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+    .registration-container {
+        padding: 15px;
+    }
+
+
+    .nav-content {
+        padding: 12px 20px;
+        justify-content: center;
+    }
+
+    .nav-logo {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .nav-logo-image {
+        width: 100px;
+        height: 50px;
+    }
+
+
+    .nav-title {
+        font-size: 20px;
+    }
+
+    .page-header h2 {
+        font-size: 20px;
+    }
+
+    .page-header p {
+        font-size: 14px;
+    }
+
+
+
+    .submit-button {
+        width: 100%;
+        min-width: auto;
+    }
+
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .section-title {
+        font-size: 18px;
+    }
+
+    .submit-button {
+        width: 100%;
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .registration-card {
+        border-radius: 12px;
+        margin: 5px;
+    }
+
+
+
+    .mega-form-grid {
+        gap: 8px;
+    }
+
+    .form-input {
+        height: 36px;
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+
+    .form-label {
+        font-size: 11px;
+        margin-bottom: 3px;
+    }
+
+    .submit-button {
+        padding: 10px 20px;
+        font-size: 14px;
+        height: 40px;
+    }
+
+    .checkbox-label {
+        padding: 8px;
+    }
+
+    .checkbox-text {
+        font-size: 12px;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.registration-card {
+    animation: fadeIn 0.6s ease-out;
+}
+
+.mega-form-grid .form-group {
+    animation: fadeIn 0.4s ease-out 0.1s both;
+}
+
+.mega-form-grid .form-group:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.mega-form-grid .form-group:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.mega-form-grid .form-group:nth-child(4) {
+    animation-delay: 0.25s;
+}
+
+.mega-form-grid .form-group:nth-child(5) {
+    animation-delay: 0.3s;
+}
+
+.mega-form-grid .form-group:nth-child(6) {
+    animation-delay: 0.35s;
+}
+
+.mega-form-grid .form-group:nth-child(7) {
+    animation-delay: 0.4s;
+}
+
+.mega-form-grid .form-group:nth-child(8) {
+    animation-delay: 0.45s;
+}
+/* Centrer le titre et le sous‑titre dans la carte */
+.registration-card .card-title,
+.registration-card .card-subtitle {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Style du titre */
+.card-title {
+    font-size: 2.25rem;          /* 36px environ */
+    font-weight: 700;
+    color: #1e3a8a;              /* bleu portnet */
+    margin-bottom: 0.1rem;
+}
+
+/* Style du sous‑titre */
+.card-subtitle {
+    font-size: 1.125rem;         /* 18px */
+    font-weight: 500;
+    color: #4a5568;              /* gris sombre */
+    margin-bottom: 0.5rem;       /* espace avant le formulaire */
+    line-height: 1.4;
+}
+
+/* --- Nav complètement transparente, logo sans fond --- */
+.registration-nav,
+.nav-content,
+.nav-logo {
+    background: none !important;
+}
+/* ==== Bloc logo + sous‑titres dans la carte ==== */
+/* ==== Centrage du logo au‑dessus du titre/sous‑titre ==== */
+.card-logo-wrapper {
+    display: flex;
+    flex-direction: column;    /* logo au‑dessus, textes en dessous si besoin */
+    align-items: center;       /* centrage horizontal */
+    justify-content: center;   /* (utile si tu ajoutes du texte ici) */
+    width: 100%;               /* prend toute la largeur de la carte */
+    margin: 0 auto 1.5rem;     /* 1.5rem d’espace en dessous vers le titre */
+    background: transparent;   /* aucun fond derrière */
+}
+
+.card-logo-wrapper img {
+    display: block;            /* supprime tout décalage inline */
+    margin: 0 auto;            /* double sécurité pour le centrage */
+    width: 100px;              /* ou la taille que tu souhaites */
+    height: auto;
+}
+
+
+/* Ajustement du logo */
+.card-logo-wrapper .nav-logo-image {
+    width: 120px;               /* ou la taille que vous préférez */
+    height: auto;
+}
+
+/* Texte en blanc et taille augmentée */
+.card-logo-wrapper {
+    color: #fff;                /* blanc */
+    font-size: 1.25rem;         /* 20px environ, ajustez à 1.5rem si vous voulez plus grand */
+    font-weight: 600;
+    text-align: center;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+    line-height: 1.2;
+}
+/* Diminue la taille et l’espacement du bloc nav-text dans la carte */
+.card-logo-wrapper {
+    gap: 0.1rem;              /* réduit l’espace entre logo et textes */
+    margin-bottom: 0.1rem;     /* un peu moins d’écart en dessous */
+}
+
+.card-logo-wrapper {
+    max-width: 100%;            /* limite la largeur du texte */
+}
+
+/* Texte français un peu plus petit */
+.card-logo-wrapper  {
+    font-size: 1rem;           /* 16px au lieu de 1.5rem */
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+/* Texte arabe un peu plus petit */
+.card-logo-wrapper  {
+    font-size: 0.9rem;         /* ~14px */
+    font-weight: 500;
+    line-height: 1.2;
+}

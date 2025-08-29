@@ -1,0 +1,60 @@
+/* on importe déjà InscriptionOperateur.css pour tout le styling général */
+@import './InscriptionOperateur.css';
+
+/* override ou additions pour la card d'activation */
+.activation-content {
+    padding: 30px;
+}
+
+.status-section {
+    text-align: center;
+}
+
+.status-section.loading .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(0,0,0,0.1);
+    border-top-color: #00509d;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+.status-section .icon {
+    margin-bottom: 1rem;
+}
+
+.success-icon,
+.info-icon,
+.error-icon {
+    width: 64px;
+    height: 64px;
+    color: #00509d;
+}
+
+.info-icon { color: #1e3a8a; }
+.error-icon { color: #dc2626; }
+
+.countdown {
+    margin: 1rem 0;
+    font-weight: 600;
+    color: #374151;
+}
+
+.countdown-number {
+    font-size: 1.25rem;
+    color: #1e3a8a;
+}
+
+/* On réutilise .submit-button et .message des styles existants */
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
