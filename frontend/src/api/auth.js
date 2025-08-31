@@ -1,107 +1,84 @@
 // src/api/auth.js
-import axios from 'axios';
+const API = process.env.REACT_APP_API_BASE || 'http://localhost:8080';
 
-// Base API (variable d'env prioritaire)
-const BASE = process.env.REACT_APP_API_URL || 'http://localhost:8080';
-
-// Instance dédiée auth
-const authAPI = axios.create({
-    baseURL: `${BASE}/api/auth`,
-    headers: { 'Content-Type': 'application/json' },
-});
-
-/* =======================
-   Helpers token & rôles
-   ======================= */
-export function getAuthToken() {
-    return localStorage.getItem('token') || '';
-}
-
-export function setAuthToken(token) {
-    if (token) localStorage.setItem('token', token);
-    else localStorage.removeItem('token');
-}
-
-export function clearAuth() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-}
-
-/** Décoder un JWT sans dépendance externe */
-export function parseJwt(tkn) {
+export function parseJwt(token) {
     try {
-        const base64Url = tkn.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(
-            atob(base64)
-                .split('')
-                .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-                .join('')
-        );
-        return JSON.parse(jsonPayload);
+        const [, payload] = String(token).split('.');
+        return JSON.parse(atob(payload));
     } catch {
         return {};
     }
 }
 
-/** Retourne un tableau de rôles (ex: ["ROLE_SUPERVISEUR", "ROLE_AGENT"]) depuis le token (ou le storage) */
-export function getRolesFromToken(tokenOpt) {
-    const t = tokenOpt || getAuthToken();
-    if (!t) return [];
-    const p = parseJwt(t);
-    const raw = p.roles || p.authorities || p.scopes || p.scope || [];
-    if (Array.isArray(raw)) return raw.map(String);
-    if (typeof raw === 'string') return raw.split(/[,\s]+/).filter(Boolean);
-    return [];
+export function normalizeRole(r) {
+    return String(r || '').toUpperCase().replace(/^ROLE_/, '');
 }
 
-/** Rôle principal normalisé (SUPERVISEUR | AGENT | IMPORTATEUR | OPERATEUR | '') */
+export function rolesFromPayload(payload = {}) {
+    const raw =
+        payload.roles ??
+        payload.authorities ??
+        payload.scope ??
+        payload.scopes ??
+        [];
+    const arr = Array.isArray(raw) ? raw : typeof raw === 'string' ? raw.split(/[,\s]+/) : [];
+    const norm = arr.map(normalizeRole).filter(Boolean);
+    // supprime doublons, garde l'ordre
+    return Array.from(new Set(norm));
+}
+
+/**
+ * Renvoie le rôle primaire (normalisé) en priorité depuis localStorage,
+ * sinon le déduit du token JWT, et le mémorise dans localStorage.
+ */
 export function getPrimaryRole() {
-    const stored = (localStorage.getItem('role') || '').toUpperCase();
-    if (stored) return stored;
+    let stored = localStorage.getItem('role');
+    if (stored) return normalizeRole(stored);
 
-    const roles = getRolesFromToken().map(r => r.toUpperCase().replace(/^ROLE_/, ''));
-    if (roles.includes('SUPERVISEUR')) return 'SUPERVISEUR';
-    if (roles.includes('AGENT')) return 'AGENT';
-    if (roles.includes('IMPORTATEUR')) return 'IMPORTATEUR';
-    if (roles.includes('OPERATEUR')) return 'OPERATEUR';
-    return '';
+    const token = localStorage.getItem('token');
+    if (!token) return '';
+    const payload = parseJwt(token);
+    const roles = rolesFromPayload(payload);
+
+    // Heuristique: privilégie SUPERVISEUR/AGENT s’ils existent
+    let role = roles.includes('SUPERVISEUR')
+        ? 'SUPERVISEUR'
+        : roles.includes('AGENT')
+            ? 'AGENT'
+            : roles[0] || '';
+
+    if (role) localStorage.setItem('role', role);
+    return role;
 }
 
-// attacher le token automatiquement sur cette instance si présent
-authAPI.interceptors.request.use((config) => {
-    const tk = getAuthToken();
-    if (tk) config.headers.Authorization = `Bearer ${tk}`;
-    return config;
-});
+export async function getCurrentUser(token) {
+    const t = token || localStorage.getItem('token');
+    if (!t) throw new Error('Non authentifié');
+    const headers = { Authorization: `Bearer ${t}` };
 
-/* =======================
-   Endpoints
-   ======================= */
-export async function login(email, password) {
-    try {
-        const { data } = await authAPI.post('/login', { email, password });
-        // attend un champ 'token' renvoyé par le backend
-        if (data?.token) setAuthToken(data.token);
-        return data;
-    } catch (err) {
-        const msg = err?.response?.data?.message || err?.response?.data?.error || err.message;
-        throw new Error(msg);
-    }
-}
-
-/** Tente /me puis /whoami selon ton backend */
-export async function getCurrentUser() {
-    try {
-        const { data } = await authAPI.get('/me');
-        return data;
-    } catch (e1) {
+    // essaie /api/auth/me puis /api/users/me
+    const paths = ['/api/auth/me', '/api/users/me'];
+    let lastErr = null;
+    for (const p of paths) {
         try {
-            const { data } = await authAPI.get('/whoami');
-            return data;
-        } catch (e2) {
-            const msg = e2?.response?.data?.message || e2?.response?.data?.error || e2.message;
-            throw new Error(msg);
+            // eslint-disable-next-line no-await-in-loop
+            const res = await fetch(`${API}${p}`, { headers });
+            if (res.ok) return await res.json();
+            lastErr = new Error(`GET ${p} → ${res.status}`);
+        } catch (e) {
+            lastErr = e;
         }
     }
+    throw lastErr || new Error('Impossible de charger le profil.');
+}
+
+// Optionnel: API login si tu veux l’utiliser ailleurs
+export async function login(email, password) {
+    const res = await fetch(`${API}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+    });
+    if (!res.ok) throw new Error('Identifiants invalides');
+    return res.json();
 }

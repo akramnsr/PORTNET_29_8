@@ -1,5 +1,5 @@
-// src/components/DrawerMIC.jsx
-import React, { useMemo } from 'react';
+// src/components/DrawerSupervisor.jsx
+import React from 'react';
 import {
     Box, Drawer, Toolbar, List, ListItemButton, ListItemIcon, ListItemText,
     Divider, Button
@@ -11,41 +11,23 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import DescriptionIcon from '@mui/icons-material/Description';
-import ChecklistIcon from '@mui/icons-material/Checklist';
-import NoteAddIcon from '@mui/icons-material/NoteAdd';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 
-import { getPrimaryRole } from '../api/auth';
 import logo from '../assets/images/PORTNET_LOGO.png';
 
 const DRAWER_WIDTH = 240;
 const BRAND = '#0B3D91';
 
-export default function DrawerMIC() {
+const items = [
+    { to: '/pbi/agents-details',        label: 'Dashboard Power BI', icon: <AssessmentIcon />, end: true },
+    { to: '/agents',                    label: 'Liste des agents',   icon: <GroupsIcon />,     end: true },
+    { to: '/superviseur/ajouter-agent', label: 'Ajouter agent',      icon: <PersonAddIcon /> },
+    { to: '/agents/workload',           label: 'Agents & charge',    icon: <DashboardIcon /> },
+    { to: '/dossiers',                  label: 'Dossiers',           icon: <DescriptionIcon /> },
+];
+
+export default function DrawerSupervisor() {
     const navigate = useNavigate();
-    const role = (getPrimaryRole() || '').toUpperCase();
-
-    // Menus strictement séparés selon le rôle
-    const items = useMemo(() => {
-        if (role === 'SUPERVISEUR') {
-            return [
-                { to: '/pbi/agents-details',        label: 'Dashboard Power BI', icon: <AssessmentIcon />, end: true },
-                { to: '/agents',                    label: 'Liste des agents',   icon: <GroupsIcon />,     end: true },
-                { to: '/superviseur/ajouter-agent', label: 'Ajouter agent',      icon: <PersonAddIcon /> },
-                { to: '/agents/workload',           label: 'Agents & charge',    icon: <DashboardIcon /> },
-                { to: '/dossiers',                  label: 'Dossiers',           icon: <DescriptionIcon /> },
-            ];
-        }
-        // AGENT par défaut
-        return [
-            { to: '/agent/dossiers',         label: 'Dossiers affectés', icon: <DescriptionIcon />, end: true },
-            { to: '/agent/taches',           label: 'Mes tâches',        icon: <ChecklistIcon /> },
-            { to: '/agent/demande/nouvelle', label: 'Nouvelle demande',  icon: <NoteAddIcon /> },
-            { to: '/agent/profil',           label: 'Mon profil',        icon: <AccountCircleIcon /> },
-        ];
-    }, [role]);
-
     const logout = () => {
         localStorage.removeItem('token');
         navigate('/login', { replace: true });

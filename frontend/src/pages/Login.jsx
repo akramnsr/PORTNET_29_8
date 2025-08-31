@@ -1,11 +1,11 @@
-// src/pages/Login.jsx
 import React, { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, AlertCircle, CheckCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import logoPortnet from '../assets/images/PORTNET_LOGO.png';
 import { parseJwt } from '../api/auth';
 
-const API = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+// ✔ Harmonisé avec le reste de l'app (REACT_APP_API_BASE)
+const API = process.env.REACT_APP_API_BASE || 'http://localhost:8080';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -54,7 +54,7 @@ const Login = () => {
                 const payload = parseJwt(token);
                 const raw = payload?.roles || payload?.authorities || payload?.scope || payload?.scopes || [];
                 const arr = Array.isArray(raw) ? raw.map(String) :
-                    typeof raw === 'string' ? raw.split(/[,\s]+/) : [];
+                    (typeof raw === 'string' ? raw.split(/[,\s]+/) : []);
                 const norm = arr.map(r => r.toUpperCase().replace(/^ROLE_/, ''));
                 if (norm.includes('SUPERVISEUR')) role = 'SUPERVISEUR';
                 else if (norm.includes('AGENT')) role = 'AGENT';
@@ -65,22 +65,24 @@ const Login = () => {
 
             showAlert('success', 'Connexion réussie ! Redirection en cours...');
 
-            // ➜ Redirections par rôle
+            // ➜ Redirections par rôle (✔ agent corrigé → /agent/dossiers)
+            // ...
+// ➜ Redirections par rôle
             switch (role) {
                 case 'SUPERVISEUR':
-                    navigate('/pbi/agents-details', { replace: true });
+                    navigate('/agents', { replace: true }); // (ou /pbi/agents-details si tu veux)
                     break;
                 case 'AGENT':
-                    navigate('/dashboard-agent', { replace: true });
+                    navigate('/agent/dossiers', { replace: true });  // ✅ existant dans App.jsx
                     break;
                 case 'IMPORTATEUR':
                 case 'OPERATEUR':
                     navigate('/dashboard-operateur', { replace: true });
                     break;
                 default:
-                    // aucun rôle dans le token → on renvoie sur /dashboard-agent par défaut
-                    navigate('/dashboard-agent', { replace: true });
+                    navigate('/agent/dossiers', { replace: true });
             }
+
         } catch {
             showAlert('error', 'Erreur de connexion. Veuillez réessayer.');
         } finally {
@@ -141,7 +143,7 @@ const Login = () => {
 
     return (
         <>
-            {/* Fond vidéo (mettez le fichier dans public/video/) */}
+            {/* Fond vidéo */}
             <div style={styles.videoWrapper}>
                 <video autoPlay muted loop style={styles.videoBackground}>
                     <source src="/video/background_video.mp4" type="video/mp4" />

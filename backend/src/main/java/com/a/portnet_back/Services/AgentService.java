@@ -4,9 +4,9 @@ import com.a.portnet_back.DTO.AgentActivationRequest;
 import com.a.portnet_back.DTO.AgentDTO;
 import com.a.portnet_back.DTO.AgentLogDTO;
 import com.a.portnet_back.DTO.AgentRequest;
+import com.a.portnet_back.Enum.Role;
 import com.a.portnet_back.Models.Agent;
 import com.a.portnet_back.Models.User;
-import com.a.portnet_back.Enum.Role;
 import com.a.portnet_back.Repositories.AgentRepository;
 import com.a.portnet_back.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,6 @@ public class AgentService {
 
         Agent savedAgent = agentRepository.save(agent);
 
-        // (optionnel) webhook d’envoi du mail d’activation
         try {
             Map<String, String> payload = new HashMap<>();
             payload.put("nom", agent.getNomComplet());
@@ -91,7 +90,7 @@ public class AgentService {
                         agent.getId(),
                         agent.getNomComplet(),
                         agent.getEmail(),
-                        agent.isEnabled(), // expose l’état réel du user
+                        agent.isEnabled(),
                         agent.getLastLogin()
                 ))
                 .collect(Collectors.toList());
@@ -128,14 +127,18 @@ public class AgentService {
         return newState;
     }
 
-    /** NOUVEAU : supprime l’agent ET le user associé */
+    /** NOUVEAU : helpers utilisés par /api/agents/me  */
+    public Optional<Agent> findByUserId(Long userId) { return agentRepository.findByUserId(userId); }
+    public Optional<Agent> findByEmail(String email) { return agentRepository.findByEmail(email); }
+    public Agent save(Agent a) { return agentRepository.save(a); }
+
+    /** Supprime l’agent ET le user associé */
     @Transactional
     public void deleteAgent(Long agentId) {
         Agent agent = agentRepository.findById(agentId)
                 .orElseThrow(() -> new RuntimeException("Agent non trouvé"));
 
         User user = agent.getUser();
-        // on brise d’abord la FK pour éviter les contraintes
         agent.setUser(null);
         agentRepository.save(agent);
 
