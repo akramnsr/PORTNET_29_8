@@ -1,4 +1,3 @@
-// src/main/java/com/a/portnet_back/Configuration/SecurityConfig.java
 package com.a.portnet_back.Configuration;
 
 import com.a.portnet_back.Services.CustomUserDetailsService;
@@ -9,6 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,7 +18,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -27,13 +26,13 @@ public class SecurityConfig {
 
     @Autowired private JwtAuthFilter jwtAuthFilter;
     @Autowired private CustomUserDetailsService userDetailsService;
-    @Autowired private CorsConfigurationSource corsConfigurationSource;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource))
+                // Utilise le bean CorsConfigurationSource exposé par CORSConfig
+                .cors(Customizer.withDefaults())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -49,7 +48,14 @@ public class SecurityConfig {
                                 "/error"
                         ).permitAll()
 
-                        // workload / journal / bulk
+                        // Référentiels pour remplir les selects côté front
+                        .requestMatchers("/api/reference/**").permitAll()
+
+                        // Création de demande
+                        .requestMatchers(HttpMethod.POST, "/api/demandes")
+                        .hasAnyAuthority("ROLE_IMPORTATEUR","ROLE_AGENT","ROLE_SUPERVISEUR")
+
+                        // Back-office / supervision
                         .requestMatchers(HttpMethod.GET,  "/api/agents/workload/**").hasAuthority("ROLE_SUPERVISEUR")
                         .requestMatchers(HttpMethod.GET,  "/api/dispatch/journal/**").hasAuthority("ROLE_SUPERVISEUR")
                         .requestMatchers(HttpMethod.POST, "/api/dossiers/bulk-reassign").hasAuthority("ROLE_SUPERVISEUR")
@@ -77,7 +83,11 @@ public class SecurityConfig {
     }
 
     @Bean public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
-    @Bean public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception { return config.getAuthenticationManager(); }
+
+    @Bean public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
     @Bean public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider p = new DaoAuthenticationProvider();
         p.setUserDetailsService(userDetailsService);

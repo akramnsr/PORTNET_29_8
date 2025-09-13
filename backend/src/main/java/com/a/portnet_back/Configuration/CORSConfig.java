@@ -1,4 +1,3 @@
-// src/main/java/com/a/portnet_back/Configuration/CORSConfig.java
 package com.a.portnet_back.Configuration;
 
 import org.springframework.context.annotation.Bean;
@@ -20,16 +19,26 @@ public class CORSConfig {
         // Autoriser l’envoi de cookies/headers d’auth
         config.setAllowCredentials(true);
 
-        // IP locales (LAN) + localhost
+        // Ajoute d'autres origins si besoin (HTTPS, LAN…)
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:3000",
                 "http://127.0.0.1:3000",
-                "http://192.168.*:3000"
+                "http://192.168.*:3000",
+                "http://10.*:3000",
+                "https://localhost:3000"
         ));
 
         config.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","OPTIONS","PATCH"));
         config.setAllowedHeaders(List.of("*"));
-        config.setExposedHeaders(List.of("Authorization"));
+
+        // Headers visibles côté front (download, pagination, etc.)
+        config.setExposedHeaders(List.of(
+                "Authorization",
+                "Content-Disposition",
+                "Content-Type",
+                "Content-Length"
+        ));
+
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
